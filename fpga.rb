@@ -69,17 +69,17 @@ class FPGA
       if type == "float32"
         low_word = @xem.GetWireOutValue(addr) & 0xffff
         high_word = @xem.GetWireOutValue(addr + 0x01 ) & 0xffff
-        full_word = (high_word<<16) + low_word
+        full_word = (high_word << 16) + low_word
         out += [full_word].pack('i').unpack('f')
       elsif type == "int32"
         low_word = @xem.GetWireOutValue(addr) & 0xffff
         high_word = @xem.GetWireOutValue(addr + 0x01 ) & 0xffff
-        full_word = (high_word<<16) + low_word
+        full_word = (high_word << 16) + low_word
         out += [full_word].pack('i').unpack('i')
       elsif type == "fixed"
         low_word = @xem.GetWireOutValue(addr) & 0xffff
         high_word = @xem.GetWireOutValue(addr + 0x01 ) & 0xffff
-        full_word = (high_word<<16) + low_word
+        full_word = (high_word << 16) + low_word
         fixed_point = [full_word].pack('i').unpack('i')
         out += [fixed_point[0].to_f/1024]
       end
@@ -180,5 +180,52 @@ class FPGA
     p @control_signals
     @xem.UpdateWireIns
   end
+
+
+  #Interhemispheric competition variables
+  def send_left_m1_in(i_in) #input to left motor cortex
+    low_word = i_in & 0xffff
+    high_word = (i_in << 16) & 0xffff
+    @xem.SetWireInValue(0x01, low_word)
+    @xem.SetWireInValue(0x02, high_word)
+    @xem.UpdateWireIns
+    @xem.ActivateTriggerIn(0x50, 6)
+  end
+
+  def send_right_m1_in(i_in) #input to right motor cortex
+    low_word = i_in & 0xffff
+    high_word = (i_in << 16) & 0xffff
+    @xem.SetWireInValue(0x01, low_word)
+    @xem.SetWireInValue(0x02, high_word)
+    @xem.UpdateWireIns
+    @xem.ActivateTriggerIn(0x50, 5)
+  end
   
+  def send_ltp(ltp) #strength of synaptic change at long-term potentiation event
+    low_word = ltp & 0xffff
+    high_word = (ltp << 16) & 0xffff
+    @xem.SetWireInValue(0x01, low_word)
+    @xem.SetWireInValue(0x02, high_word)
+    @xem.UpdateWireIns
+    @xem.ActivateTriggerIn(0x50, 12)
+  end
+
+  def send_ltd(ltd) #strength of synaptic change at long-term depression event
+    low_word = ltd & 0xffff
+    high_word = (ltd << 16) & 0xffff
+    @xem.SetWireInValue(0x01, low_word)
+    @xem.SetWireInValue(0x02, high_word)
+    @xem.UpdateWireIns
+    @xem.ActivateTriggerIn(0x50, 11)
+  end
+
+  def send_p_delta(p_decay) # probability of synaptic decay
+    low_word = p_decay & 0xffff
+    high_word = (p_decay << 16) & 0xffff
+    @xem.SetWireInValue(0x01, low_word)
+    @xem.SetWireInValue(0x02, high_word)
+    @xem.UpdateWireIns
+    @xem.ActivateTriggerIn(0x50, 10)
+  end
+
 end

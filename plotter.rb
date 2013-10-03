@@ -230,7 +230,7 @@ class OpalKellyPlotter < Window
         mask = 0x00000001
         for i in (0..31)
           #dc.draw_rectangle @xcord, yposition+5*i, 5, 5 if (mask << i) == (new_point&(mask<<i))
-          dc.draw_rectangle @xcord, yposition+4*i, 4, 4 if (mask << i) == (new_point&(mask<<i))
+          dc.draw_rectangle @xcord, yposition+4*i, 4, 4 if (mask << i) == (new_point&(mask << i))
 
         end
         plotnumber+=1

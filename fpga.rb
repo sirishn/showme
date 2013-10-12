@@ -184,8 +184,8 @@ class FPGA
 
   #Interhemispheric competition variables
   def send_left_m1_in(i_in) #input to left motor cortex
-    low_word = i_in & 0xffff
-    high_word = (i_in << 16) & 0xffff
+    low_word = i_in.to_i & 0xffff
+    high_word = (i_in.to_i << 16) & 0xffff
     @xem.SetWireInValue(0x01, low_word)
     @xem.SetWireInValue(0x02, high_word)
     @xem.UpdateWireIns
@@ -193,8 +193,8 @@ class FPGA
   end
 
   def send_right_m1_in(i_in) #input to right motor cortex
-    low_word = i_in & 0xffff
-    high_word = (i_in << 16) & 0xffff
+    low_word = i_in.to_i & 0xffff
+    high_word = (i_in.to_i << 16) & 0xffff
     @xem.SetWireInValue(0x01, low_word)
     @xem.SetWireInValue(0x02, high_word)
     @xem.UpdateWireIns
@@ -226,6 +226,15 @@ class FPGA
     @xem.SetWireInValue(0x02, high_word)
     @xem.UpdateWireIns
     @xem.ActivateTriggerIn(0x50, 10)
+  end
+
+  def send_base_strength(base_strength) # baseline synaptic strength
+    low_word = base_strength & 0xffff
+    high_word = (base_strength << 16) & 0xffff
+    @xem.SetWireInValue(0x01, low_word)
+    @xem.SetWireInValue(0x02, high_word)
+    @xem.UpdateWireIns
+    @xem.ActivateTriggerIn(0x50, 9)
   end
 
 end
